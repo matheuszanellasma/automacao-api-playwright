@@ -25,12 +25,7 @@ test.describe('Testes de buscar reservas', () => {
 
         const resposta_body = await resposta_busca.json()
 
-        expect(resposta_body.firstname).toBe(payloadValido.firstname)
-        expect(resposta_body.lastname).toBe(payloadValido.lastname)
-        expect(resposta_body.totalprice).toBe(payloadValido.totalprice)
-        expect(resposta_body.depositpaid).toBe(payloadValido.depositpaid)
-        expect(resposta_body.bookingdates.checkin).toBe(payloadValido.bookingdates.checkin)
-        expect(resposta_body.bookingdates.checkout).toBe(payloadValido.bookingdates.checkout)
+        reservaAPI.validarEstruturaDaReserva(resposta_body, payloadValido)
 
         // Deletar reserva
         const resposta_delete = await reservaAPI.deletar(bookingid, token)
