@@ -1,42 +1,106 @@
 import { test, expect } from '../suport/baseTest';
+import { AuthAPI } from '../api/AuthAPI';
 
-test.describe('Testes de buscar reservas', () => {
+test.describe('Testes de criar reservas', () => {
 
+    test('Criar reserva com sucesso', async ({ request, reservaAPI }) => {
+        const authAPI = new AuthAPI(request)
 
-    test('Autenticação com sucesso com credenciais válidas', async ({ authAPI }) => {
-
+        // Gerar token
         const resposta_auth = await authAPI.logar('admin', 'password123')
+        const token_body = await resposta_auth.json()
+        const token = token_body.token
 
-        expect(resposta_auth.status()).toBe(200)
+        // Criar reserva
+        const payloadValido = reservaAPI.gerarPayloadComFaker()
+        const resposta = await reservaAPI.criar(payloadValido)
 
-        const resposta_body = await resposta_auth.json()
-        expect(resposta_body.token).toBeDefined();
-        expect(typeof resposta_body.token).toBe('string');
+        expect(resposta.status()).toBe(200)
+
+        const resposta_body = await resposta.json()
+        const bookingid = resposta_body.bookingid
+
+        expect(resposta_body.bookingid).toBeDefined()
+        expect(typeof resposta_body.bookingid).toBe('number')
+
+        expect(resposta_body.booking).toBeDefined()
+        expect(resposta_body.booking.firstname).toBe(payloadValido.firstname)
+        expect(resposta_body.booking.lastname).toBe(payloadValido.lastname)
+        expect(resposta_body.booking.totalprice).toBe(payloadValido.totalprice)
+        expect(resposta_body.booking.depositpaid).toBe(payloadValido.depositpaid)
+        expect(resposta_body.booking.bookingdates.checkin).toBe(payloadValido.bookingdates.checkin)
+        expect(resposta_body.booking.bookingdates.checkout).toBe(payloadValido.bookingdates.checkout)
+
+        // Deletar reserva
+        const resposta_delete = await reservaAPI.deletar(bookingid, token)
+        expect(resposta_delete.status()).toBe(201)
     })
 
+    test.describe('Validações de campos obrigatórios na criação', () => {
 
-    test.describe('Validações de campos obrigatórios na autenticação ', () => {
-
-        const cenarios_autenticacao = [
-            { username: 'master', password: "password123", teste: 'usuário inválido', status: 200 },
-            { username: 'admin', password: "12345", teste: 'senha inválida', status: 200 },
-            { username: '', password: "password123", teste: 'usuário em branco', status: 200 },
-            { username: 'admin', password: '', teste: 'senha em branco', status: 200 }
+        const cenarios_obrigatorios = [
+            { campo: 'firstname', descricao: 'sem firstname' },
+            { campo: 'lastname', descricao: 'sem lastname' },
+            { campo: 'totalprice', descricao: 'sem totalprice' },
+            { campo: 'depositpaid', descricao: 'sem depositpaid' },
+            { campo: 'bookingdates', descricao: 'sem bookingdates' }
         ]
 
-        cenarios_autenticacao.forEach((cenario) => {
+        cenarios_obrigatorios.forEach((cenario) => {
+            test(`Validar erro ao criar reserva ${cenario.descricao}`, async ({ reservaAPI }) => {
+                const payload = reservaAPI.gerarPayloadComFaker()
+                delete payload[cenario.campo]
 
-            test(`Autenticação mal sucedida com ${cenario.teste}`, async ({ authAPI }) => {
-                const resposta_auth = await authAPI.logar(cenario.username, cenario.password)
+                const resposta = await reservaAPI.criar(payload)
 
-                await expect(resposta_auth.status()).toBe(cenario.status)
-
-                const resposta_body = await resposta_auth.json()
-                await expect(resposta_body.reason).toBe('Bad credentials')
-
-
-
+                expect(resposta.status()).toBe(500)
             })
         })
     })
+
+    test.describe('Testes negativos de criação de reserva', () => {
+
+        test('Criar reserva com payload incompleto (vazio)', async ({ reservaAPI }) => {
+            const resposta = await reservaAPI.criar({})
+
+            expect(resposta.status()).toBe(500)
+        })
+
+        test('Criar reserva com totalprice negativo', async ({ reservaAPI }) => {
+            const payload = reservaAPI.gerarPayloadComFaker({ totalprice: -100 })
+
+            const resposta = await reservaAPI.criar(payload)
+
+            expect(resposta.status()).toBe(200)
+            const resposta_body = await resposta.json()
+            expect(resposta_body.bookingid).toBeDefined()
+        })
+
+        test('Criar reserva com datas em formato inválido', async ({ reservaAPI }) => {
+            const payload = reservaAPI.gerarPayloadComFaker({
+                bookingdates: {
+                    checkin: 'data-invalida',
+                    checkout: 'outra-data-invalida'
+                }
+            })
+
+            const resposta = await reservaAPI.criar(payload)
+
+            expect(resposta.status()).toBe(200)
+            const resposta_body = await resposta.json()
+            expect(resposta_body.bookingid).toBeDefined()
+        })
+
+        test('Criar reserva com firstname vazio', async ({ reservaAPI }) => {
+            const payload = reservaAPI.gerarPayloadComFaker({ firstname: '' })
+
+            const resposta = await reservaAPI.criar(payload)
+
+            expect(resposta.status()).toBe(200)
+            const resposta_body = await resposta.json()
+            expect(resposta_body.bookingid).toBeDefined()
+        })
+
+    })
+
 })
