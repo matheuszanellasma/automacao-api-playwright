@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { expect } from '../suport/baseTest';
 
 export class ReservaAPI {
 
@@ -32,6 +33,15 @@ export class ReservaAPI {
         });
     }
     
+    async atualizar(id, payload, token) {
+        return await this.request.put(`${this.rota}/${id}`, {
+            data: payload,
+            headers: {
+                'Cookie': `token=${token}`
+            }
+        });
+    }
+
     async deletar(id, token) {
         return await this.request.delete(`${this.rota}/${id}`, {
             headers: {
@@ -45,9 +55,11 @@ export class ReservaAPI {
         expect(body.lastname).toBe(dadosEsperados.lastname);
         expect(body.totalprice).toBe(dadosEsperados.totalprice);
         expect(body.depositpaid).toBe(dadosEsperados.depositpaid);
-        
+
         expect(body.bookingdates.checkin).toBe(dadosEsperados.bookingdates.checkin);
         expect(body.bookingdates.checkout).toBe(dadosEsperados.bookingdates.checkout);
+
+        expect(body.additionalneeds).toBe(dadosEsperados.additionalneeds);
     }
 
 
