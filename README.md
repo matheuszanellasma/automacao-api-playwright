@@ -48,8 +48,7 @@ Neste projeto, utilizamos as seguintes ferramentas:
 * **Caso de teste Exclusão 4** – Validar rejeição de exclusão sem token válido
 
   ---
-
-  ## 🛠️ Como Executar os Testes Localmente
+## 🛠️ Como Executar os Testes Localmente
 
 ### Pré-requisitos: Node.js (versão 18 ou superior recomendada)
 
