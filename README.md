@@ -48,6 +48,18 @@ Neste projeto, utilizamos as seguintes ferramentas:
 * **Caso de teste Exclusão 4** – Validar rejeição de exclusão sem token válido
 
   ---
+## 🛠️ Como Executar os Testes Localmente
+
+### Pré-requisitos: Node.js (versão 18 ou superior recomendada)
+
+### Passo a Passo (Configuração e Execução)
+```bash
+git clone https://github.com/matheuszanellasma/automacao-api-playwright.git
+cd automacao-api-playwright
+npm install
+npx playwright install
+npx playwright test --ui
+```
 
 ## 👤 Autor
 
