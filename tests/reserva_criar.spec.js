@@ -1,34 +1,25 @@
 import { test, expect } from '../suport/baseTest';
-import { AuthAPI } from '../api/AuthAPI';
 
 test.describe('Testes de criar reservas', () => {
 
-    test('Criar reserva com sucesso @smoke', async ({ request, reservaAPI }) => {
-        const authAPI = new AuthAPI(request)
+    test('Criar reserva com sucesso @smoke', async ({ reservaAPI, authAPI }) => {
+        const respostaAuth = await authAPI.logar('admin', 'password123')
+        const { token } = await respostaAuth.json()
 
-        // Gerar token
-        const resposta_auth = await authAPI.logar('admin', 'password123')
-        const token_body = await resposta_auth.json()
-        const token = token_body.token
+        const payload = reservaAPI.gerarPayloadComFaker()
+        const respostaCriar = await reservaAPI.criar(payload)
 
-        // Criar reserva
-        const payloadValido = reservaAPI.gerarPayloadComFaker()
-        const resposta = await reservaAPI.criar(payloadValido)
+        expect(respostaCriar.status()).toBe(200)
 
-        expect(resposta.status()).toBe(200)
+        const { bookingid, booking } = await respostaCriar.json()
 
-        const resposta_body = await resposta.json()
-        const bookingid = resposta_body.bookingid
+        expect(bookingid).toBeDefined()
+        expect(typeof bookingid).toBe('number')
+        expect(booking).toBeDefined()
+        reservaAPI.validarEstruturaDaReserva(booking, payload)
 
-        expect(resposta_body.bookingid).toBeDefined()
-        expect(typeof resposta_body.bookingid).toBe('number')
-
-        expect(resposta_body.booking).toBeDefined()
-        reservaAPI.validarEstruturaDaReserva(resposta_body.booking, payloadValido)
-
-        // Deletar reserva
-        const resposta_delete = await reservaAPI.deletar(bookingid, token)
-        expect(resposta_delete.status()).toBe(201)
+        const respostaDeletar = await reservaAPI.deletar(bookingid, token)
+        expect(respostaDeletar.status()).toBe(201)
     })
 
     test.describe('Validações de campos obrigatórios na criação', () => {
@@ -57,18 +48,16 @@ test.describe('Testes de criar reservas', () => {
 
         test('Criar reserva com payload incompleto (vazio)', async ({ reservaAPI }) => {
             const resposta = await reservaAPI.criar({})
-
             expect(resposta.status()).toBe(500)
         })
 
         test('Criar reserva com totalprice negativo', async ({ reservaAPI }) => {
             const payload = reservaAPI.gerarPayloadComFaker({ totalprice: -100 })
-
             const resposta = await reservaAPI.criar(payload)
 
             expect(resposta.status()).toBe(200)
-            const resposta_body = await resposta.json()
-            expect(resposta_body.bookingid).toBeDefined()
+            const { bookingid } = await resposta.json()
+            expect(bookingid).toBeDefined()
         })
 
         test('Criar reserva com datas em formato inválido', async ({ reservaAPI }) => {
@@ -78,22 +67,20 @@ test.describe('Testes de criar reservas', () => {
                     checkout: 'outra-data-invalida'
                 }
             })
-
             const resposta = await reservaAPI.criar(payload)
 
             expect(resposta.status()).toBe(200)
-            const resposta_body = await resposta.json()
-            expect(resposta_body.bookingid).toBeDefined()
+            const { bookingid } = await resposta.json()
+            expect(bookingid).toBeDefined()
         })
 
         test('Criar reserva com firstname vazio', async ({ reservaAPI }) => {
             const payload = reservaAPI.gerarPayloadComFaker({ firstname: '' })
-
             const resposta = await reservaAPI.criar(payload)
 
             expect(resposta.status()).toBe(200)
-            const resposta_body = await resposta.json()
-            expect(resposta_body.bookingid).toBeDefined()
+            const { bookingid } = await resposta.json()
+            expect(bookingid).toBeDefined()
         })
 
     })

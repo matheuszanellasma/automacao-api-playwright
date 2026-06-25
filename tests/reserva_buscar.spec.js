@@ -1,54 +1,43 @@
 import { test, expect } from '../suport/baseTest';
-import { AuthAPI } from '../api/AuthAPI';
 
 test.describe('Testes de buscar reservas', () => {
 
 
-    test('Buscar reserva com sucesso @smoke', async ({ request, reservaAPI }) => {
-        const authAPI = new AuthAPI(request)
+    test('Buscar reserva com sucesso @smoke', async ({ reservaAPI, authAPI }) => {
+        const respostaAuth = await authAPI.logar('admin', 'password123')
+        const { token } = await respostaAuth.json()
 
-        // Gerar token
-        const resposta_auth = await authAPI.logar('admin', 'password123')
-        const token_body = await resposta_auth.json()
-        const token = token_body.token
+        const payload = reservaAPI.gerarPayloadComFaker()
+        const respostaCriar = await reservaAPI.criar(payload)
+        const { bookingid } = await respostaCriar.json()
 
-        // Criar reserva
-        const payloadValido = reservaAPI.gerarPayloadComFaker()
-        const resposta_criar = await reservaAPI.criar(payloadValido)
-        const criar_body = await resposta_criar.json()
-        const bookingid = criar_body.bookingid
+        const respostaBuscar = await reservaAPI.buscarPorId(bookingid)
 
-        // Buscar reserva criada
-        const resposta_busca = await reservaAPI.buscarPorId(bookingid)
+        expect(respostaBuscar.status()).toBe(200)
+        const respostaBody = await respostaBuscar.json()
+        reservaAPI.validarEstruturaDaReserva(respostaBody, payload)
 
-        expect(resposta_busca.status()).toBe(200)
-
-        const resposta_body = await resposta_busca.json()
-
-        reservaAPI.validarEstruturaDaReserva(resposta_body, payloadValido)
-
-        // Deletar reserva
-        const resposta_delete = await reservaAPI.deletar(bookingid, token)
-        expect(resposta_delete.status()).toBe(201)
+        const respostaDeletar = await reservaAPI.deletar(bookingid, token)
+        expect(respostaDeletar.status()).toBe(201)
     })
 
     test.describe('Testes Negativos de Busca de Reserva', () => {
 
         test('Buscar reserva inexistente', async ({ reservaAPI }) => {
-            const resposta = await reservaAPI.buscarPorId('9999');
-            expect(resposta.status()).toBe(404);
-        });
+            const resposta = await reservaAPI.buscarPorId('9999')
+            expect(resposta.status()).toBe(404)
+        })
 
         test('Buscar reserva passando ID com caracteres especiais', async ({ reservaAPI }) => {
-            const resposta = await reservaAPI.buscarPorId('@#$%');
-            expect(resposta.status()).toBe(404);
-        });
+            const resposta = await reservaAPI.buscarPorId('@#$%')
+            expect(resposta.status()).toBe(404)
+        })
 
         test('Buscar reserva passando ID com número inválido (negativo)', async ({ reservaAPI }) => {
-            const resposta = await reservaAPI.buscarPorId('-1');
-            expect(resposta.status()).toBe(404);
-        });
+            const resposta = await reservaAPI.buscarPorId('-1')
+            expect(resposta.status()).toBe(404)
+        })
 
-    });
+    })
 
 })
