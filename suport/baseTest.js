@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test';
-import { AuthAPI } from '../api/AuthAPI';
-import { ReservaAPI } from '../api/ReservaAPI'; 
+import { AuthAPI } from '../api/authAPI';
+import { ReservaAPI } from '../api/reservaAPI'; 
 
 export const test = base.extend({
 
