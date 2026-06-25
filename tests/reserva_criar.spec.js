@@ -3,7 +3,7 @@ import { AuthAPI } from '../api/AuthAPI';
 
 test.describe('Testes de criar reservas', () => {
 
-    test('Criar reserva com sucesso', async ({ request, reservaAPI }) => {
+    test('Criar reserva com sucesso @smoke', async ({ request, reservaAPI }) => {
         const authAPI = new AuthAPI(request)
 
         // Gerar token

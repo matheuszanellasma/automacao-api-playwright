@@ -12,7 +12,7 @@ test.describe('Testes de atualizar reservas', () => {
         token = token_body.token
     })
 
-    test('Atualizar reserva com sucesso', async ({ reservaAPI }) => {
+    test('Atualizar reserva com sucesso @smoke', async ({ reservaAPI }) => {
         // Criar reserva
         const payloadValido = reservaAPI.gerarPayloadComFaker()
         const resposta_criar = await reservaAPI.criar(payloadValido)

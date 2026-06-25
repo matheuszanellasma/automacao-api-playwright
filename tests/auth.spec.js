@@ -4,7 +4,7 @@ test.describe('Testes de autenticação', () => {
 
 
 
-    test('Autenticação com sucesso com credenciais válidas', async ({ authAPI }) => {
+    test('Autenticação com sucesso com credenciais válidas @smoke', async ({ authAPI }) => {
 
         const resposta_auth = await authAPI.logar('admin', 'password123')
 
