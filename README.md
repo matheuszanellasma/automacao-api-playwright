@@ -21,28 +21,28 @@ Neste projeto, utilizamos as seguintes ferramentas:
 ## 📝 Planejamento e Casos de Teste Mapeados
 
 ### - Autenticação
-* **Caso de teste Autenticação 1** – Autenticação com sucesso com credenciais válidas
+* **Caso de teste Autenticação 1** – Autenticação com sucesso com credenciais válidas (smoke)
 * **Caso de teste Autenticação 2** – Validações de campos obrigatórios na autenticação (usando matriz de dados)
 
 ###  – Buscar reserva
-* **Caso de teste Busca 1** – Busca de reserva com sucesso
+* **Caso de teste Busca 1** – Busca de reserva com sucesso (smoke)
 * **Caso de teste Busca 2** – Busca de reserva inexistente
 * **Caso de teste Busca 3** – Busca de reserva passando ID com caracteres especiais
 * **Caso de teste Busca 4** – Busca de reserva passando ID com número inválido (negativo)
 
 ###  – Criar reserva
-* **Caso de teste Cadastro 1** – Criar reserva com sucesso
+* **Caso de teste Cadastro 1** – Criar reserva com sucesso (smoke)
 * **Caso de teste Cadastro 2** – Criar reserva passando payload vazio
 * **Caso de teste Cadastro 3** – Validações de campos e tipos de dados no cadastro (usando matriz de dados)
 
 ### - Atualizar reserva completa
-* **Caso de teste Atualização Completa 1** – Atualizar reserva completa com sucesso
+* **Caso de teste Atualização Completa 1** – Atualizar reserva completa com sucesso (smoke)
 * **Caso de teste Atualização Completa 2** – Tentar atualizar reserva inexistente
 * **Caso de teste Atualização Completa 3** – Tentar atualizar reserva com payload vazio
 * **Caso de teste Atualização Completa 4** – Validar rejeição de atualização sem token válido 
 
 ###  – Deletar reserva
-* **Caso de teste Exclusão 1** – Deletar reserva com sucesso
+* **Caso de teste Exclusão 1** – Deletar reserva com sucesso (smoke)
 * **Caso de teste Exclusão 2** – Tentar deletar reserva já excluída
 * **Caso de teste Exclusão 3** – Tentar deletar reserva inexistente
 * **Caso de teste Exclusão 4** – Validar rejeição de exclusão sem token válido
