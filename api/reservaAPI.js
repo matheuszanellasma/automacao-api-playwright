@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { expect } from '../suport/baseTest';
+import { expect } from '../support/baseTest';
 
 export class ReservaAPI {
 

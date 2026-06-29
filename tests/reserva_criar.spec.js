@@ -1,4 +1,4 @@
-import { test, expect } from '../suport/baseTest';
+import { test, expect } from '../support/baseTest';
 
 test.describe('Testes de criar reservas', () => {
 
