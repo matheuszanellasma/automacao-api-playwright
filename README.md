@@ -1,3 +1,5 @@
+[![CI](https://github.com/matheuszanellasma/automacao-api-playwright/actions/workflows/push.yml/badge.svg)](https://github.com/matheuszanellasma/automacao-api-playwright/actions)
+
 # 🎭 Automação de API com Playwright
 
 ## 💻 Sobre o projeto
@@ -8,11 +10,14 @@ Neste projeto, integrei o **MCP (Model Context Protocol) do Playwright** com int
 - **Criação de Casos de Teste:** Após a criação de duas rotas manualmente, foi utilizada a IA para criar os demais casos utilizando o padrão utilizado nas rotas feitas manualmente. Após a geração dos testes pela IA, os mesmos foram avaliados e refinados se necessário.
 
 ## 🛠️ Tecnologias Utilizadas
+
 Neste projeto, utilizamos as seguintes ferramentas:
+
 - **[Node.js](https://nodejs.org/en/)**
 - **[Playwright](https://playwright.dev/)**  
 - **Padrão de Projeto: Request Objects / API Client Pattern**
 - **MCP (Model Context Protocol) do Playwright**
+- **Faker.js:** geração dinâmica de dados de teste aumentando a cobertura de variações
 
 ## 🌐 Ambiente de Testes
 
