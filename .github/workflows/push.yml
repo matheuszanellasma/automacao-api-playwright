@@ -1,4 +1,4 @@
-name: push Tests
+name: Testes Smoke
 
 on:
   push:
